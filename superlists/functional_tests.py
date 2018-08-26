@@ -6,7 +6,7 @@ from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
 class NewVisitorTest(unittest.TestCase):
     def setUp(self):
-        self.binary = FirefoxBinary('/Applications/FirefoxDeveloperEdition.app/Contents/MacOS/firefox')
+        self.binary = FirefoxBinary('/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox')
         self.browser = webdriver.Firefox(
             firefox_binary=self.binary,
             executable_path='/usr/local/bin/geckodriver'
@@ -14,6 +14,9 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
+        """
+        即使测试报错也会执行,但如果setUp报错便不会执行
+        """
         self.browser.quit()
 
     def test_can_start_a_list_and_retrieve_it_later(self):
@@ -22,7 +25,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # 他发现了网页的标签页含有"To-Do"
         self.assertIn('To-Do', self.browser.title)
-        self.fail('Finish the test!')
+        self.fail('Finish the test!')  # 无论如何都会抛异常
 
         # 应用邀请他输入一个To-Do-List
 
