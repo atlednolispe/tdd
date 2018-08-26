@@ -28,6 +28,15 @@ class NewVisitorTest(unittest.TestCase):
         """
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        rows = self.wait.until(
+            EC.visibility_of_all_elements_located((By.TAG_NAME, 'tr'))
+        )
+        self.assertIn(
+            row_text,
+            (row.text for row in rows),
+            f'"{row_text}" did not appear in table')
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Jack Ma听说有一个很酷炫的在线To-Do-List应用,他去访问了一下首页看一下情况。
         self.browser.get('http://127.0.0.1:8000')
@@ -55,13 +64,7 @@ class NewVisitorTest(unittest.TestCase):
         input_box.send_keys(Keys.ENTER)
 
         # import ipdb; ipdb.set_trace()
-        rows = self.wait.until(
-            EC.visibility_of_all_elements_located((By.TAG_NAME, 'tr'))  # presence_of_all_elements_located
-        )
-        self.assertIn(
-            '1: 收购饿了吗',
-            (row.text for row in rows),
-            'item1 did not appear in table')
+        self.check_for_row_in_list_table('1: 收购饿了吗')
 
         # 他还要邀请PaoLu Jia下周回国聊一聊
         # 页面又显示了一个文本框,可以输入其它待办事项
@@ -71,15 +74,11 @@ class NewVisitorTest(unittest.TestCase):
             EC.presence_of_element_located((By.ID, 'id_new_item'))
         )
         input_box.send_keys("邀请PaoLu Jia下周回国")
+        input_box.send_keys(Keys.ENTER)
 
         # 页面再次更新,他的To-Do-List中显示了这两个待办事项
-        rows = self.wait.until(
-            EC.visibility_of_all_elements_located((By.TAG_NAME, 'tr'))
-        )
-        self.assertIn(
-            '2: 邀请PaoLu Jia下周回国',
-            (row.text for row in rows),
-            'item2 did not appear in table')
+        self.check_for_row_in_list_table('1: 收购饿了吗')
+        self.check_for_row_in_list_table('2: 邀请PaoLu Jia下周回国')
 
         # Jack想知道这个网站是否能记住他的事项清单
         # 他看到网站为他生成了一个唯一的URL
