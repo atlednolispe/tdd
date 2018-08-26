@@ -1,6 +1,7 @@
 import unittest
 
 from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
@@ -8,9 +9,12 @@ from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 class NewVisitorTest(unittest.TestCase):
     def setUp(self):
         self.binary = FirefoxBinary('/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox')
+        self.firefox_options = FirefoxOptions()
+        self.firefox_options.headless = True
         self.browser = webdriver.Firefox(
             firefox_binary=self.binary,
-            executable_path='/usr/local/bin/geckodriver'
+            executable_path='/usr/local/bin/geckodriver',
+            options=self.firefox_options,
         )
         self.browser.implicitly_wait(3)
 
@@ -45,8 +49,8 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.text == '1: 收购饿了吗' for row in rows)
-        )
+            any(row.text == '1: 收购饿了吗' for row in rows),
+            'new to-do item did not appear in table')
 
         # 他还要邀请PaoLu Jia下周回国聊一聊
         # 页面又显示了一个文本框,可以输入其它待办事项
