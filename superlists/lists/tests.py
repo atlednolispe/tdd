@@ -12,14 +12,14 @@ from lists.views import home_page
 class HomePageTest(TestCase):
 
     @staticmethod
-    def remove_csfr(html_code):
+    def remove_csrf(html_code):
         csrf_regex = r'<input[^>]+csrfmiddlewaretoken[^>]+>'  # [^>] 任意非>
         return re.sub(csrf_regex, '', html_code)
 
-    def assertEqualExceptCSFR(self, html_code1, html_code2):
+    def assertEqualExceptCSRF(self, html_code1, html_code2):
         return self.assertEqual(
-            self.remove_csfr(html_code1),
-            self.remove_csfr(html_code2)
+            self.remove_csrf(html_code1),
+            self.remove_csrf(html_code2)
         )
 
     def test_root_url_resolves_to_home_page_view(self):
@@ -31,7 +31,7 @@ class HomePageTest(TestCase):
         response = home_page(request)
         html = response.content.decode('utf-8')
         expected_html = render_to_string('home_page.html')
-        self.assertEqualExceptCSFR(html, expected_html)
+        self.assertEqualExceptCSRF(html, expected_html)
 
     def test_home_page_can_save_a_POST_request(self):
         # TODO this test is too long
@@ -39,22 +39,36 @@ class HomePageTest(TestCase):
         request.method = 'POST'
         request.POST['item_text'] = 'A new list item'
 
-        response = home_page(request)
+        home_page(request)
 
         self.assertEqual(Item.objects.count(), 1)
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
-        self.assertIn('A new list item', response.content.decode())
-        expected_html = render_to_string(
-            'home_page.html',
-            {'new_item_text': 'A new list item'})
-        self.assertEqualExceptCSFR(response.content.decode(), expected_html)
+    def test_home_page_redirects_after_POST(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['item_text'] = 'A new list item'
+
+        response = home_page(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
 
     def test_home_page_only_saves_items_when_necessary(self):
         request = HttpRequest()
         home_page(request)
         self.assertEqual(Item.objects.count(), 0)
+
+    def test_home_page_displays_all_list_items(self):
+        Item.objects.create(text='itemey 1')
+        Item.objects.create(text='itemey 2')
+
+        request = HttpRequest()
+        response = home_page(request)
+
+        self.assertIn('itemey 1', response.content.decode())
+        self.assertIn('itemey 2', response.content.decode())
 
 
 class ItemModelTest(TestCase):

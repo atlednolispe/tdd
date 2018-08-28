@@ -30,7 +30,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def check_for_row_in_list_table(self, row_text):
         rows = self.wait.until(
-            EC.visibility_of_all_elements_located((By.TAG_NAME, 'tr'))
+            EC.visibility_of_all_elements_located((By.XPATH, '//tr'))
         )
         self.assertIn(
             row_text,
