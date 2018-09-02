@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 
-from lists.views import home_page
+from lists.views import (
+    home_page, view_list)
 
 
 urlpatterns = [
     url(r'^$', home_page, name='home'),
-    # path('admin/', admin.site.urls),
+    url(r'^lists/the-only-list-in-the-world/$', view_list, name='view_list'),
+    # url(r'^admin/', admin.site.urls),
 ]

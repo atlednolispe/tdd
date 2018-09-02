@@ -13,11 +13,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.binary = FirefoxBinary('/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox')
         self.firefox_options = FirefoxOptions()
         self.firefox_options.headless = True
-        self.browser = webdriver.Firefox(
-            firefox_binary=self.binary,
-            executable_path='/usr/local/bin/geckodriver',
-            # options=self.firefox_options,
-        )
+        self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(3)
         self.wait = WebDriverWait(self.browser, 3)
 
@@ -29,8 +25,11 @@ class NewVisitorTest(LiveServerTestCase):
 
     def check_for_row_in_list_table(self, row_text):
         rows = self.wait.until(
-            EC.presence_of_all_elements_located((By.XPATH, '//tr'))  # presence/visibility: tag: tr会有奇怪的问题
+            # Firefox: presence/visibility: tag: tr会有奇怪的问题
+            # StaleElementReferenceException
+            EC.presence_of_all_elements_located((By.XPATH, '//tr'))
         )
+
         self.assertIn(
             row_text,
             (row.text for row in rows),
@@ -62,8 +61,9 @@ class NewVisitorTest(LiveServerTestCase):
         # 待办事项表格中显示"1: 收购饿了吗"
         input_box.send_keys(Keys.ENTER)
 
+        # Firefox: current_url有延迟,需要添加time.sleep(0.5)
         jack_list_url = self.browser.current_url
-        self.assertRegex(jack_list_url, 'lists/.+')
+        self.assertRegex(jack_list_url, '/lists/.+')
 
         # import ipdb; ipdb.set_trace()
         self.check_for_row_in_list_table('1: 收购饿了吗')
@@ -93,10 +93,8 @@ class NewVisitorTest(LiveServerTestCase):
         # 我们使用一个新的浏览器会话
         # 确保Jack Ma的信息不会从cookies中泄露
         self.browser.quit()
-        self.browser = self.browser = webdriver.Firefox(
-            firefox_binary=self.binary,
-            executable_path='/usr/local/bin/geckodriver',
-        )
+        self.browser = webdriver.Chrome()
+        self.wait = WebDriverWait(self.browser, 3)
 
         # Pony Ma访问首页
         # 看不到Jack Ma的清单
