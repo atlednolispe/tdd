@@ -58,9 +58,12 @@ class NewVisitorTest(LiveServerTestCase):
         # 他在一个文本框输入了"收购饿了吗"
         input_box.send_keys("收购饿了吗")
 
-        # 他输入回车后页面更新了
+        # 他输入回车后被带到一个新URL
         # 待办事项表格中显示"1: 收购饿了吗"
         input_box.send_keys(Keys.ENTER)
+
+        jack_list_url = self.browser.current_url
+        self.assertRegex(jack_list_url, 'lists/.+')
 
         # import ipdb; ipdb.set_trace()
         self.check_for_row_in_list_table('1: 收购饿了吗')
@@ -85,6 +88,41 @@ class NewVisitorTest(LiveServerTestCase):
 
         # 他访问了这个URL,发现他的To-Do-List还在
 
-        # Jack表示非常happy,表示他非常后悔尝试了这个应用,让他难以入睡。
+        # 现在一个叫Pony Ma的新用户访问了网站
+
+        # 我们使用一个新的浏览器会话
+        # 确保Jack Ma的信息不会从cookies中泄露
+        self.browser.quit()
+        self.browser = self.browser = webdriver.Firefox(
+            firefox_binary=self.binary,
+            executable_path='/usr/local/bin/geckodriver',
+        )
+
+        # Pony Ma访问首页
+        # 看不到Jack Ma的清单
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('收购饿了吗', page_text)
+        self.assertNotIn('邀请PaoLu Jia下周回国', page_text)
+
+        # Pony Ma输入一个新To-Do,新建一个清单
+        # 他不像Jack Ma那么感兴趣
+        input_box = self.wait.until(
+            EC.presence_of_element_located((By.ID, 'id_new_item'))
+        )
+        input_box.send_keys("入股斗鱼")
+        input_box.send_keys(Keys.ENTER)
+
+        # Pony Ma获得了他的唯一URL
+        pony_list_url = self.browser.current_url
+        self.assertRegex(pony_list_url, '/lists/.+')
+        self.assertNotEqual(pony_list_url, jack_list_url)
+
+        # 这个页面还是没有Jack Ma的清单
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('收购饿了吗', page_text)
+        self.assertNotIn('邀请PaoLu Jia下周回国', page_text)
+
+        # 两人都很满意去睡觉了。
 
         self.fail('Finish the test!')  # 无论如何都会抛异常
