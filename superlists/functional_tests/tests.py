@@ -1,5 +1,4 @@
-import unittest
-
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.by import By
@@ -9,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     def setUp(self):
         self.binary = FirefoxBinary('/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox')
         self.firefox_options = FirefoxOptions()
@@ -30,7 +29,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def check_for_row_in_list_table(self, row_text):
         rows = self.wait.until(
-            EC.visibility_of_all_elements_located((By.XPATH, '//tr'))
+            EC.presence_of_all_elements_located((By.XPATH, '//tr'))  # presence/visibility: tag: tr会有奇怪的问题
         )
         self.assertIn(
             row_text,
@@ -39,7 +38,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Jack Ma听说有一个很酷炫的在线To-Do-List应用,他去访问了一下首页看一下情况。
-        self.browser.get('http://127.0.0.1:8000')
+        self.browser.get(self.live_server_url)
 
         # 他发现了网页的标签页和标题含有"To-Do"
         self.assertIn('To-Do', self.browser.title)
@@ -89,7 +88,3 @@ class NewVisitorTest(unittest.TestCase):
         # Jack表示非常happy,表示他非常后悔尝试了这个应用,让他难以入睡。
 
         self.fail('Finish the test!')  # 无论如何都会抛异常
-
-
-if __name__ == '__main__':
-    unittest.main()
