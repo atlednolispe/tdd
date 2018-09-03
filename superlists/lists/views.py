@@ -6,10 +6,6 @@ from lists.models import Item
 
 def home_page(request):
     # TODO 支持多个清单
-    if request.method == 'POST':
-        Item.objects.create(text=request.POST['item_text'])
-        return redirect('/lists/the-only-list-in-the-world/')
-
     return render(request, 'home_page.html')
 
 
@@ -19,3 +15,8 @@ def view_list(request):
         request,
         'list.html',
         {'items': items})
+
+
+def new_list(request):
+    Item.objects.create(text=request.POST['item_text'])
+    return redirect('/lists/the-only-list-in-the-world/')
