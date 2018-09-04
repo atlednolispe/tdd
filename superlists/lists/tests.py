@@ -121,7 +121,7 @@ class NewItemTest(TestCase):
         other_list = List.objects.create()
 
         self.client.post(
-            '/lists/%d/add_item' % correct_list.id,
+            '/lists/%d/add_item' % correct_list.id,  # 如果post被重定向会丢失参数,因此要注意url匹配时末尾不要有/
             data={'item_text': 'A new item for an existing list'}
         )
 
