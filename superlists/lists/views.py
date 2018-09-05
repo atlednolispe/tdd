@@ -5,7 +5,6 @@ from lists.models import Item, List
 
 
 def home_page(request):
-    # TODO 支持多个清单
     return render(request, 'home_page.html')
 
 

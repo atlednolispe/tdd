@@ -90,9 +90,6 @@ class ListViewTest(TestCase):
 class NewListTest(TestCase):
 
     def test_saving_a_POST_request(self):
-        # TODO this test is too long
-        request = HttpRequest()
-        request.method = 'POST'
         self.client.post('/lists/new',  # 不在修改数据库的操作后面加/
                          data={'item_text': 'A new list item'})
 
