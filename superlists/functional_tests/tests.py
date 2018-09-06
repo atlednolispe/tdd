@@ -1,4 +1,4 @@
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.by import By
@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
     def setUp(self):
         self.binary = FirefoxBinary('/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox')
         self.firefox_options = FirefoxOptions()
@@ -122,8 +122,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertNotIn('邀请PaoLu Jia下周回国', page_text)
 
         # 两人都很满意去睡觉了。
-
-        self.fail('Finish the test!')  # 无论如何都会抛异常
 
     def test_layout_and_styling(self):
         # Jack Ma访问首页
