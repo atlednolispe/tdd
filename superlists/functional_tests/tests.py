@@ -1,21 +1,23 @@
+import os
+
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver import FirefoxOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 
 class NewVisitorTest(StaticLiveServerTestCase):
+
     def setUp(self):
-        self.binary = FirefoxBinary('/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox')
-        self.firefox_options = FirefoxOptions()
-        self.firefox_options.headless = True
         self.browser = webdriver.Chrome()
         self.browser.implicitly_wait(3)
         self.wait = WebDriverWait(self.browser, 3)
+
+        staging_server = os.environ.get('STAGING_SERVER')
+        if staging_server:
+            self.live_server_url = 'http://' + staging_server
 
     def tearDown(self):
         """
