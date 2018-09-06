@@ -65,7 +65,6 @@ class NewVisitorTest(StaticLiveServerTestCase):
         jack_list_url = self.browser.current_url
         self.assertRegex(jack_list_url, '/lists/.+')
 
-        # import ipdb; ipdb.set_trace()
         self.check_for_row_in_list_table('1: 收购饿了吗')
 
         # 他还要邀请PaoLu Jia下周回国聊一聊
