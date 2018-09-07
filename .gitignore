@@ -109,3 +109,6 @@ ENV/
 # private
 atlednolispe_*
 
+# static
+# use python manage.py collectstatic replaced
+static/
