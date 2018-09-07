@@ -28,6 +28,7 @@ DEBUG = True
 
 # docker nginx
 # docker run -d -p 80:80 -v /home/product/sites/tdd/configurations/nginx:/etc/nginx/conf.d nginx
+# gunicorn superlists.wsgi:application --bind 0.0.0.0:8000
 ALLOWED_HOSTS = ['172.17.0.1']
 
 
