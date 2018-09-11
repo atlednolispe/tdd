@@ -60,10 +60,32 @@ def deploy():
     print(command_docker_run_nginx)
     print()
 
+    command_reload_service = 'sudo systemctl daemon-reload'
+    print('3. Please reload the service!')
+    print(command_reload_service)
+    print()
+
     command_systemctl_start_gunicorn = 'sudo systemctl start gunicorn-superlists-staging'
-    print('3. Please start the service!')
+    print('4. Please start the service!')
     print(command_systemctl_start_gunicorn)
     print()
+
+    command_check_service_status = 'systemctl status gunicorn-superlists-staging'
+    print('5. Please check the service!')
+    print('if Active: active (running) = Success')
+    print("""Example:
+    
+    ● gunicorn-superlists-staging.service - Gunicorn server for superlists-staging
+       Loaded: loaded (/etc/systemd/system/gunicorn-superlists-staging.service; disabled; vendor preset: enabled)
+       Active: active (running) since Tue 2018-09-11 18:18:30 CST; 6s ago
+     Main PID: 18814 (gunicorn)
+        Tasks: 2 (limit: 4513)
+       CGroup: /system.slice/gunicorn-superlists-staging.service
+               ├─18814 /home/product/.local/share/virtualenvs/site-Pa3_Gi3K/bin/python3.6m /home/product/.local/share/virtualenvs/site-Pa3_Gi3K/bin/gunicorn --bind unix:/tmp/superlists-staging.socket superlis
+               └─18835 /home/product/.local/share/virtualenvs/site-Pa3_Gi3K/bin/python3.6m /home/product/.local/share/virtualenvs/site-Pa3_Gi3K/bin/gunicorn --bind unix:/tmp/superlists-staging.socket superlis
+    """)
+    print()
+    print(command_check_service_status)
 
 
 if __name__ == '__main__':
