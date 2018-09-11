@@ -6,10 +6,10 @@ Description=Gunicorn server for superlists-staging
 # 一些变量可以设置为和环境变量相关联更好
 Restart=on-failure
 User=atlednolispe
-WorkingDirectory=/home/atlednolispe/Github/tdd/superlists
-# EnvironmentFile=/home/atlednolispe/Github/tdd/superlists/.env
+WorkingDirectory=/home/USER/site/superlists
+EnvironmentFile=/home/USER/site/superlists/.env
 
-ExecStart=/home/atlednolispe/.local/share/virtualenvs/tdd-GWb1K6UV/bin/gunicorn \
+ExecStart=VIRTUALENVPATH/bin/gunicorn \
     --bind unix:/tmp/superlists-staging.socket \
     superlists.wsgi:application
 

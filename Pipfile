@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 django = "==1.11"
-selenium = "*"
 gunicorn = "*"
 
 [dev-packages]
 ipdb = "*"
+fabric = "*"
+selenium = "*"
 
 [requires]
 python_version = "3.6"
