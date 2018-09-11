@@ -43,7 +43,7 @@ def deploy():
     conn.run(command_migrate)
 
     # 设置.env环境变量
-    chars = ''.join(i for i in range(33, 122))
+    chars = ''.join(chr(i) for i in range(33, 122))
     key = ''.join(random.SystemRandom().choice(chars) for _ in range(50))
     command_add_env = f'echo -e "DJANGO_DEBUG_FALSE=y\nSITENAME=192.168.123.110\nDJANGO_SECRET_KEY={key}" > /home/{USER}/site/superlists/.env'
     conn.run(command_add_env)

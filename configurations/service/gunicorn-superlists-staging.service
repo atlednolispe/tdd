@@ -5,7 +5,7 @@ Description=Gunicorn server for superlists-staging
 [Service]
 # 一些变量可以设置为和环境变量相关联更好
 Restart=on-failure
-User=atlednolispe
+User=USER
 WorkingDirectory=/home/USER/site/superlists
 EnvironmentFile=/home/USER/site/superlists/.env
 
