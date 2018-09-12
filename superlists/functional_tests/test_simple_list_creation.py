@@ -1,41 +1,13 @@
-import os
-
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from .base import FunctionalTest
 
-class NewVisitorTest(StaticLiveServerTestCase):
 
-    def setUp(self):
-        self.browser = webdriver.Chrome()
-        self.browser.implicitly_wait(3)
-        self.wait = WebDriverWait(self.browser, 3)
-
-        staging_server = os.environ.get('STAGING_SERVER')
-        if staging_server:
-            self.live_server_url = 'http://' + staging_server
-
-    def tearDown(self):
-        """
-        即使测试报错也会执行,但如果setUp报错便不会执行
-        """
-        self.browser.quit()
-
-    def check_for_row_in_list_table(self, row_text):
-        rows = self.wait.until(
-            # Firefox: presence/visibility: tag: tr会有奇怪的问题
-            # StaleElementReferenceException
-            EC.presence_of_all_elements_located((By.XPATH, '//tr'))
-        )
-
-        self.assertIn(
-            row_text,
-            (row.text for row in rows),
-            f'"{row_text}" did not appear in table')
+class NewVisitorTest(FunctionalTest):
 
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Jack Ma听说有一个很酷炫的在线To-Do-List应用,他去访问了一下首页看一下情况。
@@ -123,29 +95,3 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.assertNotIn('邀请PaoLu Jia下周回国', page_text)
 
         # 两人都很满意去睡觉了。
-
-    def test_layout_and_styling(self):
-        # Jack Ma访问首页
-        self.browser.get(self.live_server_url)
-        self.browser.set_window_size(1024, 768)
-
-        # 他看到输入框完美
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
-        self.assertAlmostEqual(
-            input_box.location['x'] + input_box.size['width'] / 2,
-            512,
-            delta=10
-        )
-
-        # 他新建了一个清单,看到输入框仍完美居中
-        input_box.send_keys('testing\n')
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
-        self.assertAlmostEqual(
-            input_box.location['x'] + input_box.size['width'] / 2,
-            512,
-            delta=10
-        )
