@@ -21,13 +21,14 @@ class ItemValidationTest(FunctionalTest):
         error = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '.has-error'))
         )
-        self.assertEqual(error.text, "You can't have an empty list item.")
+        self.assertEqual(error.text, "You can't have an empty list item")
 
         # 他输入了一些文字,再次提交,这次没问题
         input_box = self.wait.until(
             EC.presence_of_element_located((By.ID, 'id_new_item'))
         )
         input_box.send_keys('我要准备退休啦!')
+        input_box.send_keys(Keys.ENTER)
         self.check_for_row_in_list_table('1: 我要准备退休啦!')
 
         # 他有点小调皮,又提交了一共空代办事项
