@@ -57,6 +57,31 @@ class ListViewTest(TestCase):
         response = self.client.get('/lists/%d/' % list_.id)
         self.assertTemplateUsed(response, 'list.html')
 
+    def test_can_save_a_POST_request_to_an_existing_list(self):
+        correct_list = List.objects.create()
+        other_list = List.objects.create()
+
+        self.client.post(
+            '/lists/%d/' % correct_list.id,  # 如果post被重定向会丢失参数,因此要注意url匹配时末尾不要有/
+            data={'item_text': 'A new item for an existing list'}
+        )
+
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, 'A new item for an existing list')
+        self.assertEqual(new_item.list, correct_list)
+
+    def test_POST_redirects_to_list_view(self):
+        correct_list = List.objects.create()
+        other_list = List.objects.create()
+
+        response = self.client.post(
+            '/lists/%d/' % correct_list.id,
+            data={'item_text': 'A new item for an existing list'}
+        )
+
+        self.assertRedirects(response, '/lists/%d/' % correct_list.id)
+
 
 class NewListTest(TestCase):
 
@@ -88,34 +113,6 @@ class NewListTest(TestCase):
         self.assertTemplateUsed(response, 'home_page.html')
         expected_error = escape("You can't have an empty list item")
         self.assertContains(response, expected_error)
-
-
-class NewItemTest(TestCase):
-
-    def test_can_save_a_POST_request_to_an_existing_list(self):
-        correct_list = List.objects.create()
-        other_list = List.objects.create()
-
-        self.client.post(
-            '/lists/%d/add_item' % correct_list.id,  # 如果post被重定向会丢失参数,因此要注意url匹配时末尾不要有/
-            data={'item_text': 'A new item for an existing list'}
-        )
-
-        self.assertEqual(Item.objects.count(), 1)
-        new_item = Item.objects.first()
-        self.assertEqual(new_item.text, 'A new item for an existing list')
-        self.assertEqual(new_item.list, correct_list)
-
-    def test_redirects_to_list_view(self):
-        correct_list = List.objects.create()
-        other_list = List.objects.create()
-
-        response = self.client.post(
-            '/lists/%d/add_item' % correct_list.id,
-            data={'item_text': 'A new item for an existing list'}
-        )
-
-        self.assertRedirects(response, '/lists/%d/' % correct_list.id)
 
     def test_invalid_list_items_arent_saved(self):
         self.client.post('/lists/new', data={'item_text': ''})
