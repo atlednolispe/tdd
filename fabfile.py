@@ -27,7 +27,6 @@ systemctl status gunicorn-superlists-staging
 """
 import random
 
-# from fabric import Connection
 from fabric.api import (
     run, env
 )
