@@ -21,9 +21,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertIn('To-Do', header_text)
 
         # 应用邀请他输入一个To-Do-List
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
+        input_box = self.get_item_input_box()
         self.assertEqual(
             input_box.get_attribute('placeholder'),
             'Enter a to-do item')
@@ -45,9 +43,7 @@ class NewVisitorTest(FunctionalTest):
         # 页面又显示了一个文本框,可以输入其它待办事项
         # 他输入了"邀请PaoLu Jia下周回国"
         # Jack Ma做事节奏感很强
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
+        input_box = self.get_item_input_box()
         input_box.send_keys("邀请PaoLu Jia下周回国")
         input_box.send_keys(Keys.ENTER)
 
@@ -78,9 +74,7 @@ class NewVisitorTest(FunctionalTest):
 
         # Pony Ma输入一个新To-Do,新建一个清单
         # 他不像Jack Ma那么感兴趣
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
+        input_box = self.get_item_input_box()
         input_box.send_keys("入股斗鱼")
         input_box.send_keys(Keys.ENTER)
 

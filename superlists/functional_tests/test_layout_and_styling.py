@@ -1,6 +1,3 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-
 from .base import FunctionalTest
 
 
@@ -12,9 +9,7 @@ class LayoutAndStylingTest(FunctionalTest):
         self.browser.set_window_size(1024, 768)
 
         # 他看到输入框完美
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
+        input_box = self.get_item_input_box()
         self.assertAlmostEqual(
             input_box.location['x'] + input_box.size['width'] / 2,
             512,
@@ -23,9 +18,7 @@ class LayoutAndStylingTest(FunctionalTest):
 
         # 他新建了一个清单,看到输入框仍完美居中
         input_box.send_keys('testing\n')
-        input_box = self.wait.until(
-            EC.presence_of_element_located((By.ID, 'id_new_item'))
-        )
+        input_box = self.get_item_input_box()
         self.assertAlmostEqual(
             input_box.location['x'] + input_box.size['width'] / 2,
             512,
