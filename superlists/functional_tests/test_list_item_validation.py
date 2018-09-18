@@ -42,3 +42,16 @@ class ItemValidationTest(FunctionalTest):
         input_box.send_keys('我要回去当老师!')
         input_box.send_keys(Keys.ENTER)
         self.check_for_row_in_list_table('2: 我要回去当老师!')
+
+    def test_cannot_add_duplicate_items(self):
+        # Jack Ma访问首页,新建了一个清单
+        self.browser.get(self.live_server_url)
+        self.get_item_input_box().send_keys('我要办个西湖大学\n')
+        self.check_for_row_in_list_table('1: 我要办个西湖大学')
+
+        # 他不小心输入了一个重复的待办事项
+        self.get_item_input_box().send_keys('我要办个西湖大学\n')
+
+        # 他看到一条有帮助的错误消息
+        error = self.browser.find_element_by_css_selector('.has-error')
+        self.assertEqual(error.text, "You've already got this in your list")
